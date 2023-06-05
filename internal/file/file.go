@@ -1,7 +1,6 @@
 package file
 
 import (
-	"errors"
 	"fmt"
 	"io/fs"
 	"os"
@@ -47,10 +46,9 @@ func Load(filePath string) (*File, error) {
 	}
 
 	tree, err := fs.store.LoadEncryptedFile(fileBytes)
-	switch {
-	default:
-		return nil, err
-	case errors.Is(err, sops.MetadataNotFound):
+	if err == nil && tree.Metadata.Version != "" {
+		fs.Encrypted = true
+	} else {
 		branches, err := fs.store.LoadPlainFile(fileBytes)
 		if err != nil {
 			return nil, fmt.Errorf("cannot load plain file %s: %w", filePath, err)
@@ -72,8 +70,6 @@ func Load(filePath string) (*File, error) {
 		}
 
 		fs.Encrypted = false
-	case errors.Is(err, nil):
-		fs.Encrypted = true
 	}
 
 	fs.tree = &tree

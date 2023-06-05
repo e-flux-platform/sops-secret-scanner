@@ -17,17 +17,19 @@ var (
 func main() {
 	app := &cli.App{
 		Version: "0.0.1",
-		Name:    "ssops-ecret-scanner",
-		Usage:   "sop-ssecret-scanner is a SOPS utility which will scan a directory for secret files and encrypt/decrypt them based on the .sops.yaml.",
+		Name:    "sops-ecret-scanner",
+		Usage:   "sop-ssecret-scanner is a SOPS utility which will scan a directory for secret files and encrypt/decrypt them based on the .sops.yaml",
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:        "secret-regexp",
+				Usage:       "Regular expression to match secret files",
 				Value:       `^.+\/secrets?\/.+$`,
 				Destination: &secretRegexp,
 			},
 			&cli.StringFlag{
 				Name:        "base-dir",
-				Value:       ".",
+				Usage:       "Base directory to scan for secret files",
+				Value:       "deployment/",
 				Destination: &baseDir,
 			},
 		},
