@@ -84,7 +84,7 @@ func encryptMany(c *cli.Context) error {
 
 		if !fileStatus.Encrypted {
 			if err := fileStatus.Encrypt(); err != nil {
-				fmt.Println("failed to encrypt file:", secretFilePath, err)
+				log.Println("failed to encrypt file:", secretFilePath, err)
 			}
 		}
 	}
@@ -106,7 +106,7 @@ func decryptMany(c *cli.Context) error {
 
 		if fileStatus.Encrypted {
 			if err := fileStatus.Decrypt(); err != nil {
-				fmt.Println("failed to decrypt file:", secretFilePath, err)
+				log.Println("failed to decrypt file:", secretFilePath, err)
 			}
 		}
 	}
