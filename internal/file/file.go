@@ -1,6 +1,7 @@
 package file
 
 import (
+	"errors"
 	"fmt"
 	"io/fs"
 	"os"
@@ -100,9 +101,12 @@ func IdentifySecretFiles(directory string, secretRegexp string) ([]string, error
 
 		return nil
 	})
-	if err != nil {
-		return nil, err
+	switch {
+	default:
+		return nil, fmt.Errorf("cannot walk directory %q: %w", directory, err)
+	case os.IsNotExist(err):
+		return nil, fmt.Errorf("directory %q does not exist", directory)
+	case errors.Is(err, nil):
+		return secretFiles, nil
 	}
-
-	return secretFiles, nil
 }

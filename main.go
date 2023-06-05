@@ -17,8 +17,8 @@ var (
 func main() {
 	app := &cli.App{
 		Version: "0.0.1",
-		Name:    "sops-ecret-scanner",
-		Usage:   "sop-ssecret-scanner is a SOPS utility which will scan a directory for secret files and encrypt/decrypt them based on the .sops.yaml",
+		Name:    "sops-secret-scanner",
+		Usage:   "sops-secret-scanner is a SOPS utility which will scan a directory for secret files and encrypt/decrypt them based on the closest .sops.yaml configuration",
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:        "secret-regexp",
@@ -29,29 +29,48 @@ func main() {
 			&cli.StringFlag{
 				Name:        "base-dir",
 				Usage:       "Base directory to scan for secret files",
-				Value:       "deployment/",
+				Value:       ".",
 				Destination: &baseDir,
 			},
 		},
 		Commands: []*cli.Command{
 			{
+				Name:        "list-secrets",
+				Description: "List all files which match the secret-regexp",
+				Action:      listSecrets,
+			},
+			{
 				Name:        "encrypt-all",
 				Description: "Encrypt all files in the base directory",
-				Action:      encrypt,
+				Action:      encryptMany,
 			},
 			{
 				Name:        "decrypt-all",
 				Description: "Decrypt all files in the base directory",
-				Action:      decrypt,
+				Action:      decryptMany,
 			},
 		},
 	}
 	if err := app.Run(os.Args); err != nil {
-		log.Panicf("application exited with error: %s", err)
+		log.Print(err)
 	}
 }
 
-func encrypt(c *cli.Context) error {
+func listSecrets(c *cli.Context) error {
+	secretFiles, err := file.IdentifySecretFiles(baseDir, secretRegexp)
+	if err != nil {
+		return fmt.Errorf("cannot identify secret files in %q: %w", baseDir, err)
+	}
+
+	log.Printf("Found %d secret files", len(secretFiles))
+	for _, secretFilePath := range secretFiles {
+		log.Println(secretFilePath)
+	}
+
+	return nil
+}
+
+func encryptMany(c *cli.Context) error {
 	secretFiles, err := file.IdentifySecretFiles(baseDir, secretRegexp)
 	if err != nil {
 		return fmt.Errorf("cannot identify secret files in %q: %w", baseDir, err)
@@ -73,7 +92,7 @@ func encrypt(c *cli.Context) error {
 	return nil
 }
 
-func decrypt(c *cli.Context) error {
+func decryptMany(c *cli.Context) error {
 	secretFiles, err := file.IdentifySecretFiles(baseDir, secretRegexp)
 	if err != nil {
 		return fmt.Errorf("cannot identify secret files in %q: %w", baseDir, err)

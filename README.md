@@ -6,10 +6,10 @@ The motivation for this was the ability to create a `pre-commit` hook which can 
 
 ```
 NAME:
-   ssops-ecret-scanner - sop-ssecret-scanner is a SOPS utility which will scan a directory for secret files and encrypt/decrypt them based on the .sops.yaml.
+   sops-secret-scanner - sops-secret-scanner is a SOPS utility which will scan a directory for secret files and encrypt/decrypt them based on the .sops.yaml
 
 USAGE:
-   ssops-ecret-scanner [global options] command [command options] [arguments...]
+   sops-ecret-scanner [global options] command [command options] [arguments...]
 
 VERSION:
    0.0.1
@@ -20,8 +20,8 @@ COMMANDS:
    help, h      Shows a list of commands or help for one command
 
 GLOBAL OPTIONS:
-   --secret-regexp value  (default: "^.+\\/secrets?\\/.+$")
-   --base-dir value       (default: ".")
+   --secret-regexp value  Regular expression to match secret files (default: "^.+\\/secrets?\\/.+$")
+   --base-dir value       Base directory to scan for secret files (default: "deployment/")
    --help, -h             show help
    --version, -v          print the version
 ```
