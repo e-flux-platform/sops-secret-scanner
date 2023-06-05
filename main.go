@@ -35,19 +35,19 @@ func main() {
 		},
 		Commands: []*cli.Command{
 			{
-				Name:        "list-secrets",
-				Description: "List all files which match the secret-regexp",
-				Action:      listSecrets,
+				Name:   "list-secrets",
+				Usage:  "List all files which match the secret-regexp",
+				Action: listSecrets,
 			},
 			{
-				Name:        "encrypt-all",
-				Description: "Encrypt all files in the base directory",
-				Action:      encryptMany,
+				Name:   "encrypt-all",
+				Usage:  "Encrypt all files in the base directory",
+				Action: encryptMany,
 			},
 			{
-				Name:        "decrypt-all",
-				Description: "Decrypt all files in the base directory",
-				Action:      decryptMany,
+				Name:   "decrypt-all",
+				Usage:  "Decrypt all files in the base directory",
+				Action: decryptMany,
 			},
 		},
 	}
