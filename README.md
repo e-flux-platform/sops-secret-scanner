@@ -18,6 +18,8 @@ COMMANDS:
    list-secrets  List all files which match the secret-regexp
    encrypt-all   Encrypt all files in the base directory
    decrypt-all   Decrypt all files in the base directory
+   encrypt       Encrypt a single file
+   decrypt       Decrypt a single file
    help, h       Shows a list of commands or help for one command
 
 GLOBAL OPTIONS:

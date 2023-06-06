@@ -27,12 +27,12 @@ type File struct {
 func Load(filePath string) (*File, error) {
 	configFile, err := config.FindConfigFile(filePath)
 	if err != nil {
-		return nil, fmt.Errorf("cannot find config file: %w", err)
+		return nil, fmt.Errorf("cannot find config file for path %q: %w", filePath, err)
 	}
 
 	config, err := config.LoadCreationRuleForFile(configFile, filePath, nil)
 	if err != nil {
-		return nil, fmt.Errorf("cannot load config file: %w", err)
+		return nil, fmt.Errorf("cannot load config file at path %q: %w", filePath, err)
 	}
 
 	fileBytes, err := os.ReadFile(filePath)

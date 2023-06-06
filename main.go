@@ -4,14 +4,16 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path/filepath"
 
 	"github.com/e-flux-platform/sops-secret-scanner/internal/file"
 	"github.com/urfave/cli/v2"
 )
 
 var (
-	baseDir      string
-	secretRegexp string
+	baseDir        string
+	secretRegexp   string
+	secretFilePath string
 )
 
 func main() {
@@ -49,6 +51,34 @@ func main() {
 				Usage:  "Decrypt all files in the base directory",
 				Action: decryptMany,
 			},
+			{
+				Name:   "encrypt",
+				Usage:  "Encrypt a single file",
+				Action: encryptOne,
+				Flags: []cli.Flag{
+					&cli.StringFlag{
+						Name:        "secret-file",
+						Usage:       "Path to the secret file",
+						Aliases:     []string{"f"},
+						Required:    true,
+						Destination: &secretFilePath,
+					},
+				},
+			},
+			{
+				Name:   "decrypt",
+				Usage:  "Decrypt a single file",
+				Action: decryptOne,
+				Flags: []cli.Flag{
+					&cli.StringFlag{
+						Name:        "secret-file",
+						Usage:       "Path to the secret file",
+						Aliases:     []string{"f"},
+						Required:    true,
+						Destination: &secretFilePath,
+					},
+				},
+			},
 		},
 	}
 	if err := app.Run(os.Args); err != nil {
@@ -57,7 +87,7 @@ func main() {
 }
 
 func listSecrets(c *cli.Context) error {
-	secretFiles, err := file.IdentifySecretFiles(baseDir, secretRegexp)
+	secretFiles, err := file.IdentifySecretFiles(mustResolveAbsoluteFilePath(baseDir), secretRegexp)
 	if err != nil {
 		return fmt.Errorf("cannot identify secret files in %q: %w", baseDir, err)
 	}
@@ -70,8 +100,42 @@ func listSecrets(c *cli.Context) error {
 	return nil
 }
 
+func encryptOne(c *cli.Context) error {
+	fileStatus, err := file.Load(mustResolveAbsoluteFilePath(secretFilePath))
+	if err != nil {
+		return err
+	}
+
+	if !fileStatus.Encrypted {
+		if err := fileStatus.Encrypt(); err != nil {
+			log.Println("failed to encrypt file:", secretFilePath, err)
+		}
+	} else {
+		log.Println("file is not encrypted, skipping...")
+	}
+
+	return nil
+}
+
+func decryptOne(c *cli.Context) error {
+	fileStatus, err := file.Load(mustResolveAbsoluteFilePath(secretFilePath))
+	if err != nil {
+		return err
+	}
+
+	if fileStatus.Encrypted {
+		if err := fileStatus.Decrypt(); err != nil {
+			log.Println("failed to decrypt file:", secretFilePath, err)
+		}
+	} else {
+		log.Println("file is not encrypted, skipping...")
+	}
+
+	return nil
+}
+
 func encryptMany(c *cli.Context) error {
-	secretFiles, err := file.IdentifySecretFiles(baseDir, secretRegexp)
+	secretFiles, err := file.IdentifySecretFiles(mustResolveAbsoluteFilePath(baseDir), secretRegexp)
 	if err != nil {
 		return fmt.Errorf("cannot identify secret files in %q: %w", baseDir, err)
 	}
@@ -93,7 +157,7 @@ func encryptMany(c *cli.Context) error {
 }
 
 func decryptMany(c *cli.Context) error {
-	secretFiles, err := file.IdentifySecretFiles(baseDir, secretRegexp)
+	secretFiles, err := file.IdentifySecretFiles(mustResolveAbsoluteFilePath(baseDir), secretRegexp)
 	if err != nil {
 		return fmt.Errorf("cannot identify secret files in %q: %w", baseDir, err)
 	}
@@ -112,4 +176,13 @@ func decryptMany(c *cli.Context) error {
 	}
 
 	return nil
+}
+
+func mustResolveAbsoluteFilePath(filePath string) string {
+	absoluteFilePath, err := filepath.Abs(filePath)
+	if err != nil {
+		log.Fatalf("failed to resolve absolute file path for %q: %v", filePath, err)
+	}
+
+	return absoluteFilePath
 }
