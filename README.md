@@ -1,5 +1,7 @@
 # sops-secret-scanner
 
+## Description
+
 This is a command line utility built on top of [Mozilla SOPS](https://github.com/mozilla/sops) which which encrypts all files in a `secrets` directory that is a child of the `base-dir`.
 
 The motivation for this was the ability to create a `pre-commit` hook which can capture and encrypt potential secrets before they are pushed to a remote repository.
@@ -27,6 +29,16 @@ GLOBAL OPTIONS:
    --help, -h             show help
    --version, -v          print the version
 ```
+
+## Installation
+
+The CLI tool can be installed using the following command:
+
+```
+GOPRIVATE=github.com/e-flux-platform/* go install github.com/e-flux-platform/sops-secret-scanner@latest
+```
+
+## Usage
 
 ### List all secret files in currenct directory
 
