@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 
-	"go.mozilla.org/sops/v3/cmd/sops/common"
+	"github.com/getsops/sops/v3/cmd/sops/common"
 )
 
 func (fs *File) Encrypt() error {

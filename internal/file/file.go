@@ -9,11 +9,11 @@ import (
 	"regexp"
 	"time"
 
-	sops "go.mozilla.org/sops/v3"
-	"go.mozilla.org/sops/v3/aes"
-	"go.mozilla.org/sops/v3/cmd/sops/common"
-	"go.mozilla.org/sops/v3/config"
-	"go.mozilla.org/sops/v3/version"
+	sops "github.com/getsops/sops/v3"
+	"github.com/getsops/sops/v3/aes"
+	"github.com/getsops/sops/v3/cmd/sops/common"
+	"github.com/getsops/sops/v3/config"
+	"github.com/getsops/sops/v3/version"
 )
 
 type File struct {
