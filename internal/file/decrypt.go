@@ -5,8 +5,8 @@ import (
 	"log"
 	"os"
 
-	"go.mozilla.org/sops/v3/cmd/sops/common"
-	"go.mozilla.org/sops/v3/keyservice"
+	"github.com/getsops/sops/v3/cmd/sops/common"
+	"github.com/getsops/sops/v3/keyservice"
 )
 
 func (fs *File) Decrypt() error {
