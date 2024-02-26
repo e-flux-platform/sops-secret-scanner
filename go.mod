@@ -1,6 +1,6 @@
 module github.com/e-flux-platform/sops-secret-scanner
 
-go 1.20
+go 1.22
 
 require (
 	github.com/urfave/cli/v2 v2.25.5

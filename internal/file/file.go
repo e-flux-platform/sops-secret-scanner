@@ -93,6 +93,11 @@ func IdentifySecretFiles(directory string, secretRegexp string) ([]string, error
 			return err
 		}
 
+		// don't treat directories as secret files
+		if d.IsDir() {
+			return nil
+		}
+
 		if !fileMatcher.MatchString(filePath) {
 			return nil
 		}
